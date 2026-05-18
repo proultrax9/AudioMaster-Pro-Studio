@@ -115,10 +115,16 @@
           <span class="text-[10px] tracking-[0.15em] uppercase text-[#00d4ff]/60 ml-1">Pro</span>
         </div>
       </a>
-      <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all text-sm font-medium">
-        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        <span>กลับสู่ Studio</span>
-      </a>
+      <div class="flex items-center gap-2">
+        <a href="README.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10 transition-all text-sm font-medium">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Docs</span>
+        </a>
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all text-sm font-medium">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span>กลับสู่ Studio</span>
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -461,8 +467,35 @@
                 <i data-lucide="download" class="w-5 h-5 text-[#00ffaa]"></i>
               </div>
               <div>
-                <h3 class="font-semibold text-white text-sm mb-1">1. Export — ดาวน์โหลดไฟล์เสียง</h3>
-                <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-[#00ffaa] font-semibold">Export</span> สีเขียวมิ้นท์ที่มุมขวาบน ระบบจะ Render เสียงผ่านเอฟเฟกต์ทั้งหมด (EQ, Compressor, Saturation, Limiter ฯลฯ) แล้วดาวน์โหลดเป็นไฟล์ <span class="text-white/70 font-semibold">mastered_audio.wav</span> ให้ทันท้ Tomsk:ใช้เวลาประมาณความยาวของเพลง</p>
+                <h3 class="font-semibold text-white text-sm mb-1">1. Export — เลือกฟอร์แมตและดาวน์โหลด</h3>
+                <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-[#00ffaa] font-semibold">Export</span> จะเปิดหน้าต่างเลือกฟอร์แมตไฟล์ มีให้เลือก 6 ฟอร์แมต:</p>
+                <div class="mt-2 space-y-1.5">
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00d4ff]/10 text-[#00d4ff] font-semibold border border-[#00d4ff]/20">WAV 16-bit</span>
+                    <span class="text-white/40">CD Quality — ไฟล์ขนาดเล็กสุดในบรรดา WAV</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00d4ff]/10 text-[#00d4ff] font-semibold border border-[#00d4ff]/20">WAV 24-bit</span>
+                    <span class="text-white/40">Studio Quality — คุณภาพระดับสตูดิโอ ไม่สูญเสียรายละเอียด</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00d4ff]/10 text-[#00d4ff] font-semibold border border-[#00d4ff]/20">WAV 32-bit Float</span>
+                    <span class="text-white/40">Max Precision — ความแม่นยำสูงสุด เหมาะสำหรับนำไปประมวลผลต่อ</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00ffaa]/10 text-[#00ffaa] font-semibold border border-[#00ffaa]/20">MP3 320kbps</span>
+                    <span class="text-white/40">คุณภาพสูงสุดของ MP3 ไฟล์เล็กกว่า WAV มาก</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00ffaa]/10 text-[#00ffaa] font-semibold border border-[#00ffaa]/20">MP3 256kbps</span>
+                    <span class="text-white/40">คุณภาพดีมาก ไฟล์เล็กลง</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2 py-0.5 rounded bg-[#00ffaa]/10 text-[#00ffaa] font-semibold border border-[#00ffaa]/20">MP3 192kbps</span>
+                    <span class="text-white/40">ขนาดเล็กสุด เหมาะส่งต่อ/แชร์</span>
+                  </div>
+                </div>
+                <p class="text-white/45 text-sm leading-relaxed mt-2">เลือกฟอร์แมต → ดูขนาดไฟล์โดยประมาณ → กด Export! ใช้เวลาประมาณความยาวของเพลง</p>
               </div>
             </div>
           </div>
@@ -677,23 +710,29 @@
         <div class="flex flex-wrap items-center gap-2 justify-center">
           <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">Source</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Gain</span>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Input Gain</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Bass EQ</span>
-          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Mid EQ</span>
-          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Treble EQ</span>
-          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Air EQ</span>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">7-Band EQ</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
           <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Compressor</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Make-Up Gain</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
           <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Saturation</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">Analyser</span>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Stereo Width</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Output</span>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Limiter</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Noise Gate</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">De-Esser</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Output Gain</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">Analyser</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">Destination</span>
         </div>
       </div>
     </section>
@@ -716,11 +755,9 @@
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
           <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">⑤ ลาก Handle ปรับละเอียด</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">⑥ สร้าง Region ปรับบางช่วง</span>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">⑥ ไม่พอใจ? Reset / เปลี่ยน Preset</span>
           <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">⑦ ไม่พอใจ? Reset / เปลี่ยน Preset</span>
-          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
-          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">⑧ Export ✓</span>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">⑦ Export ✓</span>
         </div>
       </div>
     </section>

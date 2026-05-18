@@ -39,6 +39,15 @@ const GENRES = [
   { name: 'Grunge', emoji: '🖤' },
 ];
 
+const EXPORT_FORMATS = [
+  { id: 'wav16',  label: 'WAV 16-bit',       desc: 'CD Quality',        ext: 'wav', mime: 'audio/wav',   icon: 'file-audio' },
+  { id: 'wav24',  label: 'WAV 24-bit',       desc: 'Studio Quality',    ext: 'wav', mime: 'audio/wav',   icon: 'file-audio' },
+  { id: 'wav32f', label: 'WAV 32-bit Float', desc: 'Max Precision',     ext: 'wav', mime: 'audio/wav',   icon: 'file-audio' },
+  { id: 'mp3320', label: 'MP3 320kbps',      desc: 'Best MP3 Quality',  ext: 'mp3', mime: 'audio/mpeg',  icon: 'music' },
+  { id: 'mp3256', label: 'MP3 256kbps',      desc: 'Good MP3 Quality',  ext: 'mp3', mime: 'audio/mpeg',  icon: 'music' },
+  { id: 'mp3192', label: 'MP3 192kbps',      desc: 'Smaller File Size', ext: 'mp3', mime: 'audio/mpeg',  icon: 'music' },
+];
+
 
 
 const CONTROL_SECTIONS = [
@@ -259,6 +268,7 @@ const state = {
   startTime: 0,
   pauseOffset: 0,
   activeGenre: null,
+  selectedExportFormat: 'wav16',
   controlValues: {},
   animationId: null,
   particles: [],
@@ -271,6 +281,7 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
   initControls();
   initGenres();
+  initExportModal();
   initParticleCanvas();
   initEventListeners();
   initControlValues();
@@ -1496,7 +1507,7 @@ function initEventListeners() {
   });
 
   // Export
-  document.getElementById('exportBtn').addEventListener('click', exportAudio);
+  document.getElementById('exportBtn').addEventListener('click', openExportModal);
 
   // Drag & Drop
   const dropZone = document.getElementById('dropZone');
@@ -1574,128 +1585,384 @@ function initEventListeners() {
 }
 
 // ===== Export Audio =====
+async function renderOffline() {
+  const offlineCtx = new OfflineAudioContext(
+    state.audioBuffer.numberOfChannels,
+    state.audioBuffer.length,
+    state.audioBuffer.sampleRate
+  );
+
+  const source = offlineCtx.createBufferSource();
+  source.buffer = state.audioBuffer;
+  const cv = { ...state.controlValues };
+
+  const inputGain = offlineCtx.createGain();
+  inputGain.gain.value = Math.pow(10, (cv.inputGain ?? 0) / 20);
+
+  const eqConfig = [
+    { id: 'subBass', type: 'lowshelf', freq: 60 },
+    { id: 'bass', type: 'lowshelf', freq: 150 },
+    { id: 'lowMid', type: 'peaking', freq: 400, q: 1.0 },
+    { id: 'mid', type: 'peaking', freq: 1000, q: 0.7 },
+    { id: 'highMid', type: 'peaking', freq: 3000, q: 1.0 },
+    { id: 'treble', type: 'highshelf', freq: 6000 },
+    { id: 'air', type: 'peaking', freq: 12000, q: 0.8 },
+  ];
+  const eqFilters = {};
+  eqConfig.forEach(cfg => {
+    const filter = offlineCtx.createBiquadFilter();
+    filter.type = cfg.type;
+    filter.frequency.value = cfg.freq;
+    if (cfg.q) filter.Q.value = cfg.q;
+    filter.gain.value = cv[cfg.id] ?? 0;
+    eqFilters[cfg.id] = filter;
+  });
+
+  const compressor = offlineCtx.createDynamicsCompressor();
+  compressor.threshold.value = cv.compThreshold ?? -24;
+  compressor.ratio.value = cv.compRatio ?? 4;
+  compressor.attack.value = (cv.compAttack ?? 10) / 1000;
+  compressor.release.value = (cv.compRelease ?? 100) / 1000;
+  compressor.knee.value = cv.compKnee ?? 10;
+
+  const compMakeup = offlineCtx.createGain();
+  compMakeup.gain.value = Math.pow(10, (cv.compMakeup ?? 0) / 20);
+
+  const sat = offlineCtx.createWaveShaper();
+  sat.curve = makeSaturationCurve((cv.satDrive ?? 0) / 100, (cv.satMix ?? 100) / 100);
+  sat.oversample = '4x';
+
+  const limiter = offlineCtx.createDynamicsCompressor();
+  limiter.threshold.value = cv.limThreshold ?? -6;
+  limiter.ratio.value = 20;
+  limiter.attack.value = 0.001;
+  limiter.release.value = (cv.limRelease ?? 50) / 1000;
+  limiter.knee.value = 0;
+
+  const limMakeup = offlineCtx.createGain();
+  const lCeil = cv.limCeiling ?? -0.3;
+  const lThresh = cv.limThreshold ?? -6;
+  limMakeup.gain.value = Math.pow(10, (lCeil - lThresh) / 20);
+
+  const outputGain = offlineCtx.createGain();
+  outputGain.gain.value = Math.pow(10, (cv.outputGain ?? 0) / 20);
+
+  source.connect(inputGain);
+  let last = inputGain;
+  ['subBass', 'bass', 'lowMid', 'mid', 'highMid', 'treble', 'air'].forEach(id => {
+    last.connect(eqFilters[id]);
+    last = eqFilters[id];
+  });
+  last.connect(compressor);
+  last = compressor;
+  last.connect(compMakeup);
+  last = compMakeup;
+  last.connect(sat);
+  last = sat;
+  last.connect(limiter);
+  last = limiter;
+  last.connect(limMakeup);
+  last = limMakeup;
+  last.connect(outputGain);
+  outputGain.connect(offlineCtx.destination);
+
+  source.start(0);
+  return await offlineCtx.startRendering();
+}
+
 async function exportAudio() {
   if (!state.audioBuffer) {
     showToast('Please upload an audio file first', 'error');
     return;
   }
 
-  showToast('Rendering mastered audio...', 'info');
+  const format = state.selectedExportFormat || 'wav16';
+  const fmt = EXPORT_FORMATS.find(f => f.id === format) || EXPORT_FORMATS[0];
+  closeExportModal();
+  showToast(`Rendering ${fmt.label}...`, 'info');
 
   try {
-    const offlineCtx = new OfflineAudioContext(
-      state.audioBuffer.numberOfChannels,
-      state.audioBuffer.length,
-      state.audioBuffer.sampleRate
-    );
+    const renderedBuffer = await renderOffline();
+    let blob, filename;
 
-    const source = offlineCtx.createBufferSource();
-    source.buffer = state.audioBuffer;
+    switch (format) {
+      case 'wav16': {
+        const wav = audioBufferToWav(renderedBuffer);
+        blob = new Blob([wav], { type: fmt.mime });
+        filename = 'mastered_audio.wav';
+        break;
+      }
+      case 'wav24': {
+        const wav = audioBufferToWav24(renderedBuffer);
+        blob = new Blob([wav], { type: fmt.mime });
+        filename = 'mastered_audio_24bit.wav';
+        break;
+      }
+      case 'wav32f': {
+        const wav = audioBufferToWav32Float(renderedBuffer);
+        blob = new Blob([wav], { type: fmt.mime });
+        filename = 'mastered_audio_32bit_float.wav';
+        break;
+      }
+      case 'mp3320':
+      case 'mp3256':
+      case 'mp3192': {
+        const kbps = format === 'mp3320' ? 320 : format === 'mp3256' ? 256 : 192;
+        if (typeof lamejs === 'undefined') {
+          showToast('MP3 encoder not available — please use WAV format instead', 'error');
+          return;
+        }
+        blob = encodeMP3(renderedBuffer, kbps);
+        filename = `mastered_audio_${kbps}kbps.mp3`;
+        break;
+      }
+      default: {
+        const wav = audioBufferToWav(renderedBuffer);
+        blob = new Blob([wav], { type: 'audio/wav' });
+        filename = 'mastered_audio.wav';
+      }
+    }
 
-    // Use current control values for export
-    const cv = { ...state.controlValues };
-
-    // Input gain
-    const inputGain = offlineCtx.createGain();
-    inputGain.gain.value = Math.pow(10, (cv.inputGain ?? 0) / 20);
-
-    // EQ filters
-    const eqConfig = [
-      { id: 'subBass', type: 'lowshelf', freq: 60 },
-      { id: 'bass', type: 'lowshelf', freq: 150 },
-      { id: 'lowMid', type: 'peaking', freq: 400, q: 1.0 },
-      { id: 'mid', type: 'peaking', freq: 1000, q: 0.7 },
-      { id: 'highMid', type: 'peaking', freq: 3000, q: 1.0 },
-      { id: 'treble', type: 'highshelf', freq: 6000 },
-      { id: 'air', type: 'peaking', freq: 12000, q: 0.8 },
-    ];
-    const eqFilters = {};
-    eqConfig.forEach(cfg => {
-      const filter = offlineCtx.createBiquadFilter();
-      filter.type = cfg.type;
-      filter.frequency.value = cfg.freq;
-      if (cfg.q) filter.Q.value = cfg.q;
-      filter.gain.value = cv[cfg.id] ?? 0;
-      eqFilters[cfg.id] = filter;
-    });
-
-    // Compressor
-    const compressor = offlineCtx.createDynamicsCompressor();
-    compressor.threshold.value = cv.compThreshold ?? -24;
-    compressor.ratio.value = cv.compRatio ?? 4;
-    compressor.attack.value = (cv.compAttack ?? 10) / 1000;
-    compressor.release.value = (cv.compRelease ?? 100) / 1000;
-    compressor.knee.value = cv.compKnee ?? 10;
-
-    const compMakeup = offlineCtx.createGain();
-    compMakeup.gain.value = Math.pow(10, (cv.compMakeup ?? 0) / 20);
-
-    // Saturation
-    const sat = offlineCtx.createWaveShaper();
-    sat.curve = makeSaturationCurve(
-      (cv.satDrive ?? 0) / 100,
-      (cv.satMix ?? 100) / 100
-    );
-    sat.oversample = '4x';
-
-    // Limiter
-    const limiter = offlineCtx.createDynamicsCompressor();
-    limiter.threshold.value = cv.limThreshold ?? -6;
-    limiter.ratio.value = 20;
-    limiter.attack.value = 0.001;
-    limiter.release.value = (cv.limRelease ?? 50) / 1000;
-    limiter.knee.value = 0;
-
-    const limMakeup = offlineCtx.createGain();
-    const lCeil = cv.limCeiling ?? -0.3;
-    const lThresh = cv.limThreshold ?? -6;
-    limMakeup.gain.value = Math.pow(10, (lCeil - lThresh) / 20);
-
-    // Output gain
-    const outputGain = offlineCtx.createGain();
-    outputGain.gain.value = Math.pow(10, (cv.outputGain ?? 0) / 20);
-
-    // Connect chain
-    source.connect(inputGain);
-    let last = inputGain;
-    const eqOrder = ['subBass', 'bass', 'lowMid', 'mid', 'highMid', 'treble', 'air'];
-    eqOrder.forEach(id => {
-      last.connect(eqFilters[id]);
-      last = eqFilters[id];
-    });
-    last.connect(compressor);
-    last = compressor;
-    last.connect(compMakeup);
-    last = compMakeup;
-    last.connect(sat);
-    last = sat;
-    last.connect(limiter);
-    last = limiter;
-    last.connect(limMakeup);
-    last = limMakeup;
-    last.connect(outputGain);
-    outputGain.connect(offlineCtx.destination);
-
-    source.start(0);
-    const renderedBuffer = await offlineCtx.startRendering();
-
-    // Convert to WAV and download
-    const wav = audioBufferToWav(renderedBuffer);
-    const blob = new Blob([wav], { type: 'audio/wav' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'mastered_audio.wav';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    showToast('Audio exported successfully!', 'success');
+    downloadBlob(blob, filename);
+    showToast(`Exported as ${fmt.label} successfully!`, 'success');
   } catch (err) {
     console.error('Export error:', err);
     showToast('Export failed: ' + err.message, 'error');
   }
+}
+
+// ===== WAV 24-bit Encoder =====
+function audioBufferToWav24(buffer) {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const bitDepth = 24;
+  const bytesPerSample = 3;
+  const blockAlign = numChannels * bytesPerSample;
+  const dataLength = buffer.length * blockAlign;
+  const totalLength = 44 + dataLength;
+  const arrayBuffer = new ArrayBuffer(totalLength);
+  const view = new DataView(arrayBuffer);
+
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, totalLength - 8, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataLength, true);
+
+  const channels = [];
+  for (let i = 0; i < numChannels; i++) channels.push(buffer.getChannelData(i));
+
+  let offset = 44;
+  for (let i = 0; i < buffer.length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      const sample = Math.max(-1, Math.min(1, channels[ch][i]));
+      let intSample = sample < 0 ? sample * 0x800000 : sample * 0x7FFFFF;
+      intSample = Math.round(intSample);
+      view.setUint8(offset, intSample & 0xFF);
+      view.setUint8(offset + 1, (intSample >> 8) & 0xFF);
+      view.setUint8(offset + 2, (intSample >> 16) & 0xFF);
+      offset += 3;
+    }
+  }
+  return arrayBuffer;
+}
+
+// ===== WAV 32-bit Float Encoder =====
+function audioBufferToWav32Float(buffer) {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const bitDepth = 32;
+  const bytesPerSample = 4;
+  const blockAlign = numChannels * bytesPerSample;
+  const dataLength = buffer.length * blockAlign;
+  const totalLength = 44 + dataLength;
+  const arrayBuffer = new ArrayBuffer(totalLength);
+  const view = new DataView(arrayBuffer);
+
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, totalLength - 8, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 3, true); // 3 = IEEE Float
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataLength, true);
+
+  const channels = [];
+  for (let i = 0; i < numChannels; i++) channels.push(buffer.getChannelData(i));
+
+  let offset = 44;
+  for (let i = 0; i < buffer.length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      view.setFloat32(offset, channels[ch][i], true);
+      offset += 4;
+    }
+  }
+  return arrayBuffer;
+}
+
+// ===== MP3 Encoder =====
+function encodeMP3(buffer, kbps) {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, kbps);
+  const mp3Data = [];
+
+  const left = buffer.getChannelData(0);
+  const right = numChannels > 1 ? buffer.getChannelData(1) : left;
+
+  const blockSize = 1152;
+  const leftInt16 = new Int16Array(left.length);
+  const rightInt16 = new Int16Array(right.length);
+
+  for (let i = 0; i < left.length; i++) {
+    leftInt16[i] = Math.max(-32768, Math.min(32767, Math.round(left[i] * 32768)));
+    rightInt16[i] = Math.max(-32768, Math.min(32767, Math.round(right[i] * 32768)));
+  }
+
+  for (let i = 0; i < left.length; i += blockSize) {
+    const leftChunk = leftInt16.subarray(i, Math.min(i + blockSize, left.length));
+    const rightChunk = rightInt16.subarray(i, Math.min(i + blockSize, right.length));
+    const mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+    if (mp3buf.length > 0) mp3Data.push(mp3buf);
+  }
+
+  const endBuf = mp3encoder.flush();
+  if (endBuf.length > 0) mp3Data.push(endBuf);
+
+  return new Blob(mp3Data, { type: 'audio/mpeg' });
+}
+
+// ===== Download Helper =====
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ===== File Size Estimation =====
+function estimateFileSize(formatId, buffer) {
+  const duration = buffer.duration;
+  const sampleRate = buffer.sampleRate;
+  const numChannels = buffer.numberOfChannels;
+  switch (formatId) {
+    case 'wav16':  return sampleRate * duration * 2 * numChannels + 44;
+    case 'wav24':  return sampleRate * duration * 3 * numChannels + 44;
+    case 'wav32f': return sampleRate * duration * 4 * numChannels + 44;
+    case 'mp3320': return (320000 / 8) * duration;
+    case 'mp3256': return (256000 / 8) * duration;
+    case 'mp3192': return (192000 / 8) * duration;
+    default: return 0;
+  }
+}
+
+function formatFileSize(bytes) {
+  if (bytes >= 1048576) return `${(bytes / 1048576).toFixed(1)} MB`;
+  if (bytes >= 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${bytes.toFixed(0)} B`;
+}
+
+// ===== Export Modal =====
+function initExportModal() {
+  const formatGrid = document.getElementById('formatGrid');
+  if (!formatGrid) return;
+
+  const mp3Available = typeof lamejs !== 'undefined';
+
+  EXPORT_FORMATS.forEach(fmt => {
+    const btn = document.createElement('button');
+    const isMp3 = fmt.id.startsWith('mp3');
+    const isActive = fmt.id === state.selectedExportFormat;
+    btn.className = `format-card${isActive ? ' active' : ''}${isMp3 && !mp3Available ? ' disabled' : ''}`;
+    btn.dataset.format = fmt.id;
+    if (isMp3 && !mp3Available) btn.disabled = true;
+
+    const iconColor = isMp3 ? 'text-mint' : 'text-neon-blue';
+    const sizeInfo = state.audioBuffer ? formatFileSize(estimateFileSize(fmt.id, state.audioBuffer)) : '';
+    const disabledTag = isMp3 && !mp3Available ? '<span class="text-[9px] text-red-400/60 ml-1">(encoder unavailable)</span>' : '';
+
+    btn.innerHTML = `
+      <div class="flex items-center gap-2 mb-1">
+        <i data-lucide="${fmt.icon}" class="w-4 h-4 ${iconColor}"></i>
+        <span class="text-xs font-bold text-white">${fmt.label}</span>
+      </div>
+      <div class="text-[10px] text-white/35">${fmt.desc}</div>
+      ${disabledTag}
+    `;
+    btn.addEventListener('click', () => selectExportFormat(fmt.id));
+    formatGrid.appendChild(btn);
+  });
+
+  lucide.createIcons();
+
+  document.getElementById('exportModalOverlay').addEventListener('click', closeExportModal);
+  document.getElementById('exportModalClose').addEventListener('click', closeExportModal);
+  document.getElementById('exportCancelBtn').addEventListener('click', closeExportModal);
+  document.getElementById('exportConfirmBtn').addEventListener('click', exportAudio);
+}
+
+function openExportModal() {
+  if (!state.audioBuffer) {
+    showToast('Please upload an audio file first', 'error');
+    return;
+  }
+  document.getElementById('exportModal').classList.remove('hidden');
+  updateExportFormatSizes();
+  updateExportInfo();
+}
+
+function closeExportModal() {
+  document.getElementById('exportModal').classList.add('hidden');
+}
+
+function selectExportFormat(formatId) {
+  state.selectedExportFormat = formatId;
+  document.querySelectorAll('.format-card').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.format === formatId);
+  });
+  updateExportInfo();
+}
+
+function updateExportFormatSizes() {
+  if (!state.audioBuffer) return;
+  document.querySelectorAll('.format-card').forEach(btn => {
+    const fmt = EXPORT_FORMATS.find(f => f.id === btn.dataset.format);
+    if (fmt && state.audioBuffer) {
+      const size = estimateFileSize(fmt.id, state.audioBuffer);
+      const sizeEl = btn.querySelector('.format-size');
+      if (sizeEl) sizeEl.textContent = `~${formatFileSize(size)}`;
+    }
+  });
+}
+
+function updateExportInfo() {
+  const infoText = document.getElementById('exportInfoText');
+  if (!infoText || !state.audioBuffer) return;
+  const fmt = EXPORT_FORMATS.find(f => f.id === state.selectedExportFormat);
+  if (!fmt) return;
+  const size = estimateFileSize(fmt.id, state.audioBuffer);
+  const duration = state.audioBuffer.duration;
+  const sr = state.audioBuffer.sampleRate;
+  const ch = state.audioBuffer.numberOfChannels;
+  infoText.innerHTML = `<span class="text-neon-blue font-semibold">${fmt.label}</span> &bull; ${duration.toFixed(1)}s &bull; ${(sr/1000).toFixed(1)} kHz &bull; ${ch === 1 ? 'Mono' : 'Stereo'} &bull; ~<span class="text-mint font-semibold">${formatFileSize(size)}</span>`;
 }
 
 function audioBufferToWav(buffer) {

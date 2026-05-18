@@ -25,8 +25,8 @@
       <!-- Sidebar Header -->
       <div class="px-5 py-5 border-b border-white/5">
         <div class="flex items-center gap-3 mb-1">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-neon-blue to-mint flex items-center justify-center">
-            <i data-lucide="audio-waveform" class="w-5 h-5 text-dark-900"></i>
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4ff] to-[#00ffaa] flex items-center justify-center">
+            <i data-lucide="audio-waveform" class="w-5 h-5 text-[#060a14]"></i>
           </div>
           <div>
             <h1 class="text-lg font-bold text-white leading-tight">AudioMaster</h1>
@@ -59,8 +59,8 @@
         <div class="flex items-center gap-3">
           <!-- Mobile Logo -->
           <div class="lg:hidden flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-neon-blue to-mint flex items-center justify-center">
-              <i data-lucide="audio-waveform" class="w-4 h-4 text-dark-900"></i>
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00d4ff] to-[#00ffaa] flex items-center justify-center">
+              <i data-lucide="audio-waveform" class="w-4 h-4 text-[#060a14]"></i>
             </div>
             <span class="font-bold text-sm">AudioMaster</span>
           </div>
@@ -82,6 +82,10 @@
           <a href="help.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10 hover:border-white/20 transition-all text-sm font-medium" title="คู่มือการใช้งาน">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span class="hidden sm:inline">Help</span>
+          </a>
+          <a href="README.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white/80 hover:bg-white/10 hover:border-white/20 transition-all text-sm font-medium" title="Project Documentation">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Docs</span>
           </a>
         </div>
       </header>
@@ -237,9 +241,45 @@
   <!-- Hidden File Input -->
   <input type="file" id="fileInput" accept="audio/*" class="hidden">
 
+  <!-- Export Modal -->
+  <div id="exportModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-dark-900/80 backdrop-blur-sm" id="exportModalOverlay"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-dark-800/95 backdrop-blur-xl rounded-2xl border border-white/10 w-full max-w-lg shadow-2xl">
+        <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="download" class="w-5 h-5 text-mint"></i>
+            Export Audio
+          </h2>
+          <button id="exportModalClose" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="px-6 py-4">
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">เลือกรูปแบบไฟล์</h3>
+          <div class="grid grid-cols-2 gap-2" id="formatGrid"></div>
+        </div>
+        <div class="px-6 py-3 border-t border-white/5">
+          <div class="flex items-center gap-2 text-xs text-white/40">
+            <i data-lucide="info" class="w-3.5 h-3.5 flex-shrink-0"></i>
+            <span id="exportInfoText">Select a format to see details</span>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-white/5 flex items-center gap-3 justify-end">
+          <button id="exportCancelBtn" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white/80 transition-all text-sm font-medium">ยกเลิก</button>
+          <button id="exportConfirmBtn" class="px-5 py-2 rounded-lg bg-mint/10 border border-mint/30 text-mint hover:bg-mint/20 transition-all text-sm font-medium flex items-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
   <script src="script.js"></script>
 <script src="https://deepsite.hf.co/deepsite-badge.js"></script>
 </body>

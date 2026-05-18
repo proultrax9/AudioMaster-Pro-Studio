@@ -389,6 +389,57 @@ body {
 
 
 
+/* ===== Export Format Cards ===== */
+.format-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.format-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(var(--neon-blue-rgb), 0.08), rgba(var(--mint-rgb), 0.04));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.format-card:hover {
+  border-color: rgba(var(--neon-blue-rgb), 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--neon-blue-rgb), 0.08);
+}
+.format-card:hover::before {
+  opacity: 1;
+}
+
+.format-card.active {
+  border-color: var(--neon-blue);
+  background: rgba(var(--neon-blue-rgb), 0.08);
+  box-shadow: 0 0 15px rgba(var(--neon-blue-rgb), 0.15), inset 0 0 12px rgba(var(--neon-blue-rgb), 0.04);
+}
+.format-card.active::before {
+  opacity: 1;
+}
+
+.format-card.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.format-card > div {
+  position: relative;
+  z-index: 1;
+}
+
 /* ===== Box Sizing ===== */
 *, *::before, *::after {
   box-sizing: border-box;
