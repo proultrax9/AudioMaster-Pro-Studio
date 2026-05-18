@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AudioMaster Pro — คู่มือการใช้งาน</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    :root {
+      --neon-blue: #00d4ff;
+      --neon-blue-rgb: 0, 212, 255;
+      --mint: #00ffaa;
+      --mint-rgb: 0, 255, 170;
+      --dark-900: #060a14;
+      --dark-800: #0c1220;
+      --dark-700: #111a2e;
+      --dark-600: #1a2540;
+    }
+    body { background: var(--dark-900); color: #f0f0f0; }
+    .bg-dark-900 { background-color: var(--dark-900); }
+    .bg-dark-800 { background-color: var(--dark-800); }
+    .bg-dark-700 { background-color: var(--dark-700); }
+    .text-neon-blue { color: var(--neon-blue); }
+    .text-mint { color: var(--mint); }
+    .bg-neon-blue { background-color: var(--neon-blue); }
+    .bg-mint { background-color: var(--mint); }
+    .border-neon-blue { border-color: var(--neon-blue); }
+    .border-mint { border-color: var(--mint); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+    .glass-card {
+      background: rgba(12, 18, 32, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .glass-card:hover {
+      border-color: rgba(var(--neon-blue-rgb), 0.15);
+      box-shadow: 0 0 30px rgba(var(--neon-blue-rgb), 0.03);
+    }
+
+    .step-number {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(var(--neon-blue-rgb), 0.15), rgba(var(--mint-rgb), 0.08));
+      border: 1px solid rgba(var(--neon-blue-rgb), 0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px;
+      color: var(--neon-blue);
+      flex-shrink: 0;
+    }
+
+    .feature-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600;
+      border: 1px solid;
+    }
+
+    .shortcut-key {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 28px; height: 26px; padding: 0 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px; font-size: 11px; font-weight: 600;
+      font-family: 'Inter', monospace;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .toc-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      transition: all 0.2s; cursor: pointer;
+      text-decoration: none;
+    }
+    .toc-link:hover {
+      color: var(--neon-blue);
+      background: rgba(var(--neon-blue-rgb), 0.06);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+      opacity: 0;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+
+    ::selection { background: rgba(var(--neon-blue-rgb), 0.3); color: white; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Top Navigation -->
+  <nav class="sticky top-0 z-50 bg-dark-800/80 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d4ff] to-[#00ffaa] flex items-center justify-center">
+          <i data-lucide="audio-waveform" class="w-5 h-5 text-[#060a14]"></i>
+        </div>
+        <div>
+          <span class="font-bold text-white text-sm group-hover:text-[#00d4ff] transition-colors">AudioMaster</span>
+          <span class="text-[10px] tracking-[0.15em] uppercase text-[#00d4ff]/60 ml-1">Pro</span>
+        </div>
+      </a>
+      <a href="index.html" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all text-sm font-medium">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>กลับสู่ Studio</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Hero Header -->
+    <div class="text-center mb-12 animate-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold mb-4">
+        <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+        คู่มือการใช้งาน
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+        AudioMaster <span class="text-[#00d4ff]">Pro</span> Studio
+      </h1>
+      <p class="text-white/50 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+        เครื่องมือ Mastering ออนไลน์ที่ทำงานบนเบราว์เซอร์ของคุณโดยตรง <br class="hidden sm:block">
+        ใช้ Web Audio API ในการประมวลผลเสียงแบบ Real-time
+      </p>
+    </div>
+
+    <!-- Quick Start -->
+    <section class="mb-10 animate-in delay-1">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="zap" class="w-4 h-4 text-[#00d4ff]"></i></span>
+          เริ่มต้นใช้งานอย่างรวดเร็ว
+        </h2>
+        <div class="grid gap-4">
+          <!-- Step 1 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">1</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">อัพโหลดไฟล์เสียง</h3>
+              <p class="text-white/45 text-sm leading-relaxed">คลิกปุ่ม <span class="text-[#00d4ff] font-medium">Upload Audio</span> หรือลากไฟล์เสียงวางที่ช่อง Waveform รองรับไฟล์ WAV, MP3, FLAC, OGG</p>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">2</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">เลือก Genre Preset</h3>
+              <p class="text-white/45 text-sm leading-relaxed">เลือกแนวเพลงจาก Sidebar (Desktop) หรือแท็บ Genres (มือถือ) ระบบจะปรับค่า EQ และ Compressor อัตโนมัติให้เหมาะกับแนวเพลงนั้น</p>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">3</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">ปรับแต่งเสียงด้วย Sliders</h3>
+              <p class="text-white/45 text-sm leading-relaxed">ใช้ Slider ทั้ง 10 ตัวในส่วน Mastering Controls เพื่อปรับค่าต่างๆ แบบ Real-time เช่น Bass, Treble, Compressor ฯลฯ</p>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">4</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">ฟังผลลัพธ์แบบ Real-time</h3>
+              <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-[#00ffaa] font-medium">Play</span> เพื่อฟังเสียงที่ปรับแล้ว ดู Spectrum Analyzer และ EQ Curve เปลี่ยนแปลงได้แบบเรียลไทม์</p>
+            </div>
+          </div>
+          <!-- Step 5 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">5</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">ปรับแต่งละเอียดด้วย EQ Handles</h3>
+              <p class="text-white/45 text-sm leading-relaxed">บนกราฟ EQ Response Curve มี <span class="text-[#00d4ff] font-medium">7 จุดกลม (Handles)</span> ให้ลากขึ้น-ลงปรับค่าได้โดยตรง ค่าจะ Sync กับ Slider ด้านล่างทันที</p>
+            </div>
+          </div>
+          <!-- Step 6 -->
+          <div class="flex gap-4 items-start p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="step-number">6</div>
+            <div>
+              <h3 class="font-semibold text-white text-sm mb-1">Export ไฟล์เสียง</h3>
+              <p class="text-white/45 text-sm leading-relaxed">เมื่อพอใจผลลัพธ์แล้ว กดปุ่ม <span class="text-[#00ffaa] font-medium">Export</span> ระบบจะ Render เสียงพร้อมเอฟเฟกต์ทั้งหมดแล้วดาวน์โหลดเป็นไฟล์ <span class="text-white/70 font-semibold">WAV 16-bit</span> ให้ทันที</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two Column: Features + Controls -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+
+      <!-- Feature Details -->
+      <section class="animate-in delay-2">
+        <div class="glass-card rounded-xl p-5 sm:p-6 h-full">
+          <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-[#00ffaa]/10 flex items-center justify-center"><i data-lucide="layout-grid" class="w-4 h-4 text-[#00ffaa]"></i></span>
+            ฟีเจอร์หลัก
+          </h2>
+          <div class="space-y-4">
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="upload" class="w-4 h-4 text-[#00d4ff]"></i>
+                <h3 class="font-semibold text-sm text-white">Drag & Drop Upload</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">ลากไฟล์เสียงวางที่ช่อง Waveform ได้เลย หรือคลิกปุ่ม Upload Audio เพื่อเลือกไฟล์</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="audio-waveform" class="w-4 h-4 text-[#00d4ff]"></i>
+                <h3 class="font-semibold text-sm text-white">Waveform Player</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">แสดงรูปคลื่นเสียงแบบละเอียด มี Seek Bar สำหรับกระโดดไปยังจุดต่างๆ ของเพลงได้</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#00ffaa]"></i>
+                <h3 class="font-semibold text-sm text-white">Spectrum Analyzer</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">แสดงกราฟความถี่เสียงแบบ Real-time 64 แท่ง พร้อม Peak Indicator สี Mint เมื่อเสียงดังเกิน 70%</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="sliders-horizontal" class="w-4 h-4 text-[#00ffaa]"></i>
+                <h3 class="font-semibold text-sm text-white">EQ Response Curve</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">แสดงเส้นโค้ง EQ 7 Band อัพเดทแบบ Real-time มี <span class="text-[#00d4ff] font-semibold">Drag Handles</span> ให้ลากจุดกลมบน Curve เพื่อปรับค่าได้โดยตรง พร้อมปุ่ม <span class="text-white/60 font-semibold">Reset EQ</span> คืนค่าทุก Band เป็น 0 dB ทันที</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="grid-3x3" class="w-4 h-4 text-[#00d4ff]"></i>
+                <h3 class="font-semibold text-sm text-white">35 Genre Presets + Reset</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">เลือกแนวเพลงได้ 35 แนว ตั้งแต่ Pop, Rock, EDM ถึง Afrobeats, Shoegaze และ Grunge แต่ละ Preset ปรับค่า EQ + Compressor อัตโนมัติ ปรับเพิ่มเติมแล้วอยากกลับ? กด <span class="text-[#00d4ff] font-semibold">Reset Preset</span> คืนค่ากลับไป Preset เดิมได้ทันที</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <div class="flex items-center gap-2 mb-1.5">
+                <i data-lucide="download" class="w-4 h-4 text-[#00ffaa]"></i>
+                <h3 class="font-semibold text-sm text-white">Export WAV</h3>
+              </div>
+              <p class="text-white/40 text-xs leading-relaxed">ส่งออกเสียงที่ Master แล้วเป็นไฟล์ WAV 16-bit คุณภาพสูง รวมเอฟเฟกต์ทั้งหมดที่เปิดใช้ พร้อมดาวน์โหลดทันที</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Control Details -->
+      <section class="animate-in delay-3">
+        <div class="glass-card rounded-xl p-5 sm:p-6 h-full">
+          <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="settings" class="w-4 h-4 text-[#00d4ff]"></i></span>
+            รายละเอียด Controls
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00d4ff] border-[#00d4ff]/25 bg-[#00d4ff]/5 mt-0.5">Gain</span>
+              <p class="text-white/40 text-xs leading-relaxed">ปรับความดังรวมของเสียง ย่าน -24 ถึง +24 dB เพิ่ม/ลด 0.5 dB ต่อครั้ง</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00d4ff] border-[#00d4ff]/25 bg-[#00d4ff]/5 mt-0.5">Bass</span>
+              <p class="text-white/40 text-xs leading-relaxed">Low Shelf Filter ที่ 150 Hz ปรับความดังย่านเบส -12 ถึง +12 dB</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00d4ff] border-[#00d4ff]/25 bg-[#00d4ff]/5 mt-0.5">Mid</span>
+              <p class="text-white/40 text-xs leading-relaxed">Peaking Filter ที่ 1 kHz (Q=0.7) ปรับความดังย่านกลาง -12 ถึง +12 dB</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00d4ff] border-[#00d4ff]/25 bg-[#00d4ff]/5 mt-0.5">Treble</span>
+              <p class="text-white/40 text-xs leading-relaxed">High Shelf Filter ที่ 3 kHz ปรับความดังย่านสูง -12 ถึง +12 dB</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00ffaa] border-[#00ffaa]/25 bg-[#00ffaa]/5 mt-0.5">Air</span>
+              <p class="text-white/40 text-xs leading-relaxed">Peaking Filter ที่ 12 kHz เพิ่มความสว่าง/ความโปร่งให้เสียง -6 ถึง +6 dB</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00ffaa] border-[#00ffaa]/25 bg-[#00ffaa]/5 mt-0.5">Compressor</span>
+              <p class="text-white/40 text-xs leading-relaxed">Dynamic Compressor ปรับอัตราส่วนบีบอัด 0-100% (Ratio 1:1 - 12:1) ลดช่วง Dynamic Range</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-[#00ffaa] border-[#00ffaa]/25 bg-[#00ffaa]/5 mt-0.5">Saturation</span>
+              <p class="text-white/40 text-xs leading-relaxed">WaveShaper จำลองเสียง Saturation/Harmonic Distortion 0-100% ให้ความอบอุ่นแก่เสียง</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-white/50 border-white/15 bg-white/5 mt-0.5">Stereo Width</span>
+              <p class="text-white/40 text-xs leading-relaxed">ปรับความกว้างของ Stereo Image 0% (Mono) ถึง 200% (Extra Wide)</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-white/50 border-white/15 bg-white/5 mt-0.5">Noise Gate</span>
+              <p class="text-white/40 text-xs leading-relaxed">กำหนดระดับ Noise Floor -80 ถึง 0 dB เสียงที่เบากว่าจะถูกตัดออก</p>
+            </div>
+            <div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition-colors">
+              <span class="feature-tag text-white/50 border-white/15 bg-white/5 mt-0.5">De-esser</span>
+              <p class="text-white/40 text-xs leading-relaxed">ลดเสียง Sibilance (เสียง ส/ช) 0-100% ช่วยให้ Vocal นุ่มขึ้น</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Keyboard Shortcuts & Tips -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+
+      <!-- Keyboard Shortcuts -->
+      <section class="animate-in delay-4">
+        <div class="glass-card rounded-xl p-5 sm:p-6">
+          <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-[#00ffaa]/10 flex items-center justify-center"><i data-lucide="keyboard" class="w-4 h-4 text-[#00ffaa]"></i></span>
+            Keyboard Shortcuts
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-white/60 text-sm">เล่น / หยุดชั่วคราว</span>
+              <div class="flex items-center gap-1.5">
+                <span class="shortcut-key">Space</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-white/60 text-sm">อัพโหลดไฟล์</span>
+              <div class="flex items-center gap-1.5">
+                <span class="shortcut-key">Ctrl</span>
+                <span class="text-white/20 text-xs">+</span>
+                <span class="shortcut-key">O</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-white/60 text-sm">Reset ค่าทั้งหมด</span>
+              <div class="flex items-center gap-1.5">
+                <span class="shortcut-key">Ctrl</span>
+                <span class="text-white/20 text-xs">+</span>
+                <span class="shortcut-key">R</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-white/60 text-sm">Export เสียง</span>
+              <div class="flex items-center gap-1.5">
+                <span class="shortcut-key">Ctrl</span>
+                <span class="text-white/20 text-xs">+</span>
+                <span class="shortcut-key">E</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-white/60 text-sm">ปรับ Volume</span>
+              <div class="flex items-center gap-1.5">
+                <span class="shortcut-key">↑</span>
+                <span class="text-white/20 text-xs">/</span>
+                <span class="shortcut-key">↓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips -->
+      <section class="animate-in delay-5">
+        <div class="glass-card rounded-xl p-5 sm:p-6">
+          <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="lightbulb" class="w-4 h-4 text-[#00d4ff]"></i></span>
+            เคล็ดลับการ Mastering
+          </h2>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00d4ff] text-lg leading-none mt-0.5">①</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">เริ่มจาก Preset ก่อน</span> — เลือก Genre Preset ที่ใกล้เคียงที่สุด แล้วค่อยปรับแต่งเพิ่มเติมจะเร็วกว่าเริ่มจากศูนย์</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00ffaa] text-lg leading-none mt-0.5">②</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">อย่าเพิ่ม Bass มากเกิน</span> — +6 dB น่าจะพอสำหรับส่วนใหญ่ เพิ่มมากไปจะทำให้ Mix รกและผิดเพี้ยน</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00d4ff] text-lg leading-none mt-0.5">③</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">Compressor ช่วยกระชับเสียง</span> — ค่า 40-60% เหมาะสำหรับเพลงส่วนใหญ่ ถ้าเกิน 70% เสียงจะถูกบีบจนไม่เป็นธรรมชาติ</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00ffaa] text-lg leading-none mt-0.5">④</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">Air เพิ่มความโปร่ง</span> — ใช้ +2 ถึง +4 dB สำหรับ Vocal หรือ Acoustic จะช่วยให้เสียงเปิดและสว่างขึ้น</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00d4ff] text-lg leading-none mt-0.5">⑤</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">Reset Preset กลับไปเดิมได้</span> — ปรับเพิ่มเติมแล้วไม่ชอบ? กดปุ่ม <span class="text-[#00d4ff] font-semibold">Reset Preset</span> คืนค่าทุก Slider กลับไปที่ Preset ของ Genre นั้นๆ ได้ทันที ไม่ต้องเริ่มใหม่</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00ffaa] text-lg leading-none mt-0.5">⑥</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">ลาก Handle บน EQ Curve</span> — วิธีเร็วสุดคือลากจุดกลมบนกราฟ EQ แทนการใช้ Slider ทีละอัน ปรับได้ทั้ง 7 Band ในที่เดียว</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00d4ff] text-lg leading-none mt-0.5">⑦</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">Reset ได้เสมอ</span> — กดปุ่ม <span class="text-white/60 font-semibold">Reset All</span> เพื่อคืนค่าทุกตัวกลับเป็น Default หรือ <span class="text-[#00d4ff] font-semibold">Reset EQ</span> เพื่อคืนเฉพาะ 7 Band EQ ไม่ต้องกลัวทำพัง</p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+              <span class="text-[#00ffaa] text-lg leading-none mt-0.5">⑧</span>
+              <p class="text-white/45 text-xs leading-relaxed"><span class="text-white/70 font-semibold">Export เมื่อพอใจ</span> — ปรับจนพอใจแล้วกด Export ได้เลย ไฟล์จะ Render ผ่านเอฟเฟกต์ทั้งหมดที่เปิดอยู่</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Mobile Usage -->
+    <section class="mb-10 animate-in delay-4">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="smartphone" class="w-4 h-4 text-[#00d4ff]"></i></span>
+          การใช้งานบนมือถือ
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="grid-3x3" class="w-4 h-4 text-[#00ffaa]"></i>
+              <h3 class="font-semibold text-sm text-white">Bottom Navigation</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">ใช้แถบนำทางด้านล่างสำหรับสลับไปยังส่วนต่างๆ: Player, Genres, Controls, Analyzer</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="menu" class="w-4 h-4 text-[#00d4ff]"></i>
+              <h3 class="font-semibold text-sm text-white">Genre Drawer</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">แตะแท็บ Genres หรือปุ่มเมนู เพื่อเปิดช่องเลือก Genre แบบ 3 คอลัมน์ ขึ้นมาจากด้านล่าง</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="hand" class="w-4 h-4 text-[#00d4ff]"></i>
+              <h3 class="font-semibold text-sm text-white">Touch Sliders</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">สไลด์นิ้วบน Slider เพื่อปรับค่า รองรับการสัมผัส แตะแล้วลากได้ทุกตัว</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="maximize-2" class="w-4 h-4 text-[#00ffaa]"></i>
+              <h3 class="font-semibold text-sm text-white">Responsive Layout</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">การ์ดและ Slider จะจัดเรียงใหม่อัตโนมัติให้พอดีกับหน้าจอขนาดเล็ก</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- After Adjusting: What's Next? -->
+    <section class="mb-10 animate-in delay-4">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00ffaa]/10 flex items-center justify-center"><i data-lucide="arrow-down-circle" class="w-4 h-4 text-[#00ffaa]"></i></span>
+          ปรับเสียงพอแล้ว ทำอะไรต่อ?
+        </h2>
+        <div class="space-y-4">
+          <!-- Export -->
+          <div class="p-4 rounded-xl bg-gradient-to-r from-[#00ffaa]/5 to-transparent border border-[#00ffaa]/10">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#00ffaa]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="download" class="w-5 h-5 text-[#00ffaa]"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">1. Export — ดาวน์โหลดไฟล์เสียง</h3>
+                <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-[#00ffaa] font-semibold">Export</span> สีเขียวมิ้นท์ที่มุมขวาบน ระบบจะ Render เสียงผ่านเอฟเฟกต์ทั้งหมด (EQ, Compressor, Saturation, Limiter ฯลฯ) แล้วดาวน์โหลดเป็นไฟล์ <span class="text-white/70 font-semibold">mastered_audio.wav</span> ให้ทันท้ Tomsk:ใช้เวลาประมาณความยาวของเพลง</p>
+              </div>
+            </div>
+          </div>
+          <!-- Reset Preset -->
+          <div class="p-4 rounded-xl bg-gradient-to-r from-[#00d4ff]/5 to-transparent border border-[#00d4ff]/10">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#00d4ff]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="refresh-cw" class="w-5 h-5 text-[#00d4ff]"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">2. Reset Preset — คืนกลับไป Preset เดิม</h3>
+                <p class="text-white/45 text-sm leading-relaxed">เลือก Genre Preset แล้วปรับเพิ่มเติม แต่ไม่พอใจ? กดปุ่ม <span class="text-[#00d4ff] font-semibold">Reset Preset</span> ที่ส่วน Mastering Controls ระบบจะคืนค่าทุก Slider กลับไปที่ Preset ของ Genre นั้นๆ ทันที ไม่ต้องเลือกใหม่!<br><span class="text-white/30 text-xs">⚠️ ถ้ายังไม่ได้เลือก Genre จะคืนเป็นค่า Default แทน</span></p>
+              </div>
+            </div>
+          </div>
+          <!-- Reset EQ -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="rotate-ccw" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">3. Reset EQ — คืนค่า EQ เป็น Flat</h3>
+                <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-[#00d4ff] font-semibold">Reset EQ</span> ที่อยู่ขวาสุดของ EQ Response Curve จะรีเซ็ต <span class="text-white/70 font-semibold">7 Band EQ</span> ทั้งหมดกลับเป็น 0 dB ทันที — เหมาะสำหรับเริ่มปรับใหม่จากศูนย์โดยไม่กระทบ Compressor หรือเอฟเฟกต์อื่น</p>
+              </div>
+            </div>
+          </div>
+          <!-- Reset All -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="rotate-ccw" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">4. Reset All — คืนค่าทุกอย่างเป็น Default</h3>
+                <p class="text-white/45 text-sm leading-relaxed">กดปุ่ม <span class="text-white/60 font-semibold">Reset All</span> ที่ส่วน Mastering Controls จะรีเซ็ต <span class="text-white/70 font-semibold">ทุก Slider</span> กลับเป็นค่า Default (ศูนย์ทั้งหมด) และยกเลิกการเลือก Genre ด้วย</p>
+              </div>
+            </div>
+          </div>
+          <!-- A/B Compare -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="git-compare" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">5. A/B Compare — เปรียบเทียบเสียง</h3>
+                <p class="text-white/45 text-sm leading-relaxed">อยากเปรียบเทียบก่อน-หลัง? กด <span class="text-white/60 font-semibold">Stop</span> แล้วปรับค่าใหม่ → กด Play ฟังใหม่ → ลองปรับอีก → ทำซ้ำจนกว่าจะพอใจ แล้วค่อย Export</p>
+              </div>
+            </div>
+          </div>
+          <!-- Switch Genre -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="grid-3x3" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">6. ลองเปลี่ยน Genre Preset</h3>
+                <p class="text-white/45 text-sm leading-relaxed">ไม่พอใจผลลัพธ์? ลองเลือก Genre Preset อื่น ระบบจะปรับค่าทุกตัวให้เหมาะกับแนวเพลงนั้นอัตโนมัติ แล้วค่อยปรับแต่งเพิ่มเติมจากจุดนั้น ถ้าปรับเพิ่มแล้วไม่ชอบ กด <span class="text-[#00d4ff] font-semibold">Reset Preset</span> ได้ไม่จำกัด</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reset Buttons Explained -->
+    <section class="mb-10 animate-in delay-3">
+      <div class="glass-card rounded-xl p-5 sm:p-6 border-[#00d4ff]/10" style="border-color: rgba(0,212,255,0.12)">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="refresh-cw" class="w-4 h-4 text-[#00d4ff]"></i></span>
+          ปุ่ม Reset ทั้ง 3 แบบ
+        </h2>
+        <p class="text-white/40 text-sm mb-5 leading-relaxed">มีปุ่ม Reset ให้เลือก 3 แบบ แต่ละแบบทำงานต่างกัน — เลือกให้เหมาะกับสถานการณ์</p>
+
+        <div class="grid gap-4">
+          <!-- Reset Preset -->
+          <div class="p-4 rounded-xl bg-gradient-to-r from-[#00d4ff]/5 to-transparent border border-[#00d4ff]/10">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#00d4ff]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="refresh-cw" class="w-5 h-5 text-[#00d4ff]"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">🔄 Reset Preset — คืนกลับไป Preset เดิม</h3>
+                <p class="text-white/45 text-sm leading-relaxed">มีประโยชน์ที่สุด! เลือก Genre แล้วปรับเพิ่มเติม แต่ปรับไปปรับมาไม่พอใจ → กด <span class="text-[#00d4ff] font-semibold">Reset Preset</span> ค่าทุก Slider จะกลับไปที่ Preset ของ Genre นั้นๆ ทันที<br><span class="text-white/30 text-xs">⚠️ ถ้ายังไม่ได้เลือก Genre จะคืนเป็นค่า Default แทน</span></p>
+              </div>
+            </div>
+          </div>
+          <!-- Reset EQ -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="rotate-ccw" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">📊 Reset EQ — คืนเฉพาะ EQ เป็น Flat</h3>
+                <p class="text-white/45 text-sm leading-relaxed">คืนค่า <span class="text-white/70 font-semibold">7 Band EQ</span> ทั้งหมดเป็น 0 dB โดยไม่กระทบ Compressor, Saturation, Stereo หรือเอฟเฟกต์อื่น — เหมาะเวลาอยากเริ่มปรับ EQ ใหม่จากศูนย์</p>
+              </div>
+            </div>
+          </div>
+          <!-- Reset All -->
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="rotate-ccw" class="w-5 h-5 text-white/40"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white text-sm mb-1">🗑️ Reset All — คืนทุกอย่างเป็น Default</h3>
+                <p class="text-white/45 text-sm leading-relaxed">คืน <span class="text-white/70 font-semibold">ทุก Slider ทั้งหมด</span> กลับเป็นค่า Default (ศูนย์ทั้งหมด) และยกเลิกการเลือก Genre ด้วย — เหมาะเวลาอยากเริ่มต้นใหม่ทั้งหมด</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="mt-5 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+          <h3 class="font-semibold text-white text-sm mb-3 flex items-center gap-2">
+            <i data-lucide="table" class="w-4 h-4 text-[#ffd93d]"></i>
+            เปรียบเทียบปุ่ม Reset ทั้ง 3
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-white/50">
+              <thead>
+                <tr class="border-b border-white/10">
+                  <th class="py-2 px-3 text-left text-white/30 font-semibold">ปุ่ม</th>
+                  <th class="py-2 px-3 text-center text-white/30 font-semibold">EQ</th>
+                  <th class="py-2 px-3 text-center text-white/30 font-semibold">Compressor</th>
+                  <th class="py-2 px-3 text-center text-white/30 font-semibold">เอฟเฟกต์อื่น</th>
+                  <th class="py-2 px-3 text-center text-white/30 font-semibold">Genre ที่เลือก</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-white/5">
+                  <td class="py-2 px-3 text-[#00d4ff] font-semibold">Reset Preset</td>
+                  <td class="py-2 px-3 text-center">→ Preset</td>
+                  <td class="py-2 px-3 text-center">→ Preset</td>
+                  <td class="py-2 px-3 text-center">→ Preset</td>
+                  <td class="py-2 px-3 text-center">✅ คงไว้</td>
+                </tr>
+                <tr class="border-b border-white/5">
+                  <td class="py-2 px-3 font-semibold text-white/60">Reset EQ</td>
+                  <td class="py-2 px-3 text-center">→ 0 dB</td>
+                  <td class="py-2 px-3 text-center">ไม่แตะ</td>
+                  <td class="py-2 px-3 text-center">ไม่แตะ</td>
+                  <td class="py-2 px-3 text-center">✅ คงไว้</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-semibold text-white/40">Reset All</td>
+                  <td class="py-2 px-3 text-center">→ 0 dB</td>
+                  <td class="py-2 px-3 text-center">→ Default</td>
+                  <td class="py-2 px-3 text-center">→ Default</td>
+                  <td class="py-2 px-3 text-center">❌ ลบ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EQ Handles Detail -->
+    <section class="mb-10 animate-in delay-4">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00d4ff]/10 flex items-center justify-center"><i data-lucide="move-vertical" class="w-4 h-4 text-[#00d4ff]"></i></span>
+          วิธีใช้ EQ Drag Handles
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-6 h-6 rounded-full bg-[#00d4ff]/30 border-2 border-[#00d4ff]/50 flex items-center justify-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/80"></span>
+              </span>
+              <h3 class="font-semibold text-sm text-white">ลากจุดกลมบน Curve</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">บน EQ Response Curve มีจุดกลม 7 จุด แทน Sub, Bass, Lo Mid, Mid, Hi Mid, Treble, Air — คลิกแล้วลากขึ้น-ลงได้เลย</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="link" class="w-4 h-4 text-[#00ffaa]"></i>
+              <h3 class="font-semibold text-sm text-white">Sync กับ Slider</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">เมื่อลาก Handle ค่าจะอัพเดทไปยัง Slider ด้านล่างทันที และในทางกลับกัน — ปรับ Slider แล้ว Handle บน Curve ก็จะขยับตาม</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="mouse-pointer" class="w-4 h-4 text-[#00d4ff]"></i>
+              <h3 class="font-semibold text-sm text-white">Hover ดูค่า</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">เอาเมาส์ใกล้ Handle จะแสดง Label ชื่อ Band + ค่า dB (เช่น "Bass +3.0 dB") ทำให้รู้ว่ากำลังปรับอะไร</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="smartphone" class="w-4 h-4 text-[#00ffaa]"></i>
+              <h3 class="font-semibold text-sm text-white">รองรับ Touch</h3>
+            </div>
+            <p class="text-white/40 text-xs leading-relaxed">บนมือถือ ใช้นิ้วแตะที่จุดกลมแล้วลากขึ้น-ลงได้เลย ระบบจะจับตำแหน่งนิ้วแล้วแปลงเป็นค่า dB ให้อัตโนมัติ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audio Signal Chain -->
+    <section class="mb-10 animate-in delay-5">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-[#00ffaa]/10 flex items-center justify-center"><i data-lucide="git-branch" class="w-4 h-4 text-[#00ffaa]"></i></span>
+          Audio Signal Chain
+        </h2>
+        <p class="text-white/40 text-sm mb-4">ลำดับการไหลของเสียงผ่าน Node ต่างๆ ในระบบ:</p>
+        <div class="flex flex-wrap items-center gap-2 justify-center">
+          <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">Source</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Gain</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Bass EQ</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Mid EQ</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Treble EQ</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Air EQ</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Compressor</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Saturation</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">Analyser</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/20"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs font-semibold">Output</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Complete Workflow Summary -->
+    <section class="mb-10 animate-in delay-5">
+      <div class="glass-card rounded-xl p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00d4ff]/15 to-[#00ffaa]/15 flex items-center justify-center"><i data-lucide="workflow" class="w-4 h-4 text-[#00d4ff]"></i></span>
+          สรุป Workflow ทั้งหมด
+        </h2>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">① Upload</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">② เลือก Preset</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">③ ปรับ EQ/Compressor</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">④ Play ฟัง</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">⑤ ลาก Handle ปรับละเอียด</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00d4ff]/10 border border-[#00d4ff]/20 text-[#00d4ff] text-xs font-semibold">⑥ สร้าง Region ปรับบางช่วง</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-semibold">⑦ ไม่พอใจ? Reset / เปลี่ยน Preset</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-white/15"></i>
+          <span class="px-3 py-1.5 rounded-lg bg-[#00ffaa]/10 border border-[#00ffaa]/20 text-[#00ffaa] text-xs font-semibold">⑧ Export ✓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="text-center py-8 border-t border-white/5">
+      <p class="text-white/25 text-xs">AudioMaster Pro v2.0 — Built with Web Audio API, TailwindCSS & ❤️</p>
+      <a href="index.html" class="inline-flex items-center gap-2 mt-3 text-[#00d4ff]/60 hover:text-[#00d4ff] transition-colors text-sm">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        กลับสู่หน้า Studio
+      </a>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
